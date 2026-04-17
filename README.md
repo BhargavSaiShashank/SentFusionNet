@@ -1,8 +1,8 @@
 ---
 title: SentFusionNet API
 emoji: 🚀
-colorFrom: cyan
-colorTo: slate
+colorFrom: blue
+colorTo: indigo
 sdk: docker
 pinned: false
 ---
