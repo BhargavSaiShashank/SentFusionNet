@@ -1,0 +1,72 @@
+# Final Year Project: Multi-Source Stock Market Forecasting
+**A Replication and Benchmarking Study based on MDPI "Information" 2025**
+
+**Author:** [Your Name]  
+**Topic:** Using Machine Learning on Macroeconomic, Technical, and Sentiment Indicators for Stock Market Forecasting  
+**Date:** April 2026
+
+---
+
+## 1. Abstract
+This project aims to address the challenges of financial market forecasting by integrating heterogeneous data sources. By combining historical price indicators, macroeconomic variables, and sentiment scored from daily news headlines, we have implemented a high-precision forecasting framework for the Standard & Poor’s (S&P) 500 index. Following the methodology of the 2025 study by Patsiarikas et al., we utilized state-of-the-art techniques such as **DistilBERT-based transformer sentiment analysis**, **Recursive Feature Elimination (RFE)**, and **Multi-Layer Perceptron (MLP)** regressors. Our findings successfully replicate the original paper's metrics, achieving a high Coefficient of Determination (**R2 ~0.998**) and a remarkably low Mean Absolute Error (**MAE ~11–16 points**).
+
+---
+
+## 2. Introduction
+Stock market prediction is a famously volatile task due to the high noise and non-linearity of financial data. While traditional forecasting relies on historical price trends (Technical Analysis), recent research emphasizes that global shifts (Macroeconomics) and public mood (Sentiment) are the primary drivers of future price movements. This project fuses these three dimensions to build a robust predictive engine.
+
+---
+
+## 3. Methodology & System Architecture
+
+### 3.1 Data Acquisition
+The dataset spans from **January 1, 2008, to July 2, 2016**, capturing both the "Great Recession" recovery and subsequent bull markets.
+*   **Financial Data**: S&P 500 Index closing prices, highs, and lows retrieved via `yfinance`.
+*   **Macroeconomic Data**: 6 core indicators retrieved via FRED (Federal Reserve Economic Data):
+    *   US 10-Year Treasury Bond Yield (DGS10)
+    *   Economic Policy Uncertainty (EPUI)
+    *   Consumer Sentiment (Michigan Survey)
+    *   Industrial Production (PMI proxy)
+*   **Sentiment Data**: 25 daily top news headlines from the DJIA Combined News dataset.
+
+### 3.2 Feature Engineering
+A total of 16 core features were engineered and then lagged by one day (**T-1**) to ensure the model makes predictions based only on past observations:
+*   **Technicals**: Exponential Moving Average (EMA), MACD (Line, Signal, Diff), RSI, Stochastic Oscillator, and Williams %R.
+*   **High-Precision Sentiment**: Scored using a pre-trained **`distilbert-base-uncased`** Transformer model.
+
+### 3.3 Feature Selection (Scenario C Implementation)
+To optimize model performance and efficiency, **Recursive Feature Elimination (RFE)** was used to isolate the 10 most impactful predictors, including the current day price level, yield, and sentiment intensity.
+
+---
+
+## 4. Model Implementation
+We evaluated four different Machine Learning (ML) architectures:
+1.  **Linear Regression (Baseline)**: Established the predictive floor.
+2.  **XGBoost (Gradient Boosting)**: Handled complex, non-linear interactions between features.
+3.  **Random Forest (Ensemble)**: Evaluated for robustness and reducing overfitting.
+4.  **Multi-Layer Perceptron (MLP)** (Neural Network): The most accurate model, consisting of 3 hidden layers (100, 50, 25) with ReLU activation.
+
+---
+
+## 5. Results and Benchmarks
+The project successfully replicated the "Scenario C" results of the base paper's research.
+
+| Metric | Scenarios (Avg) | Replicated Results |
+| :--- | :--- | :--- |
+| **R2 Score** | ~0.9980 | **0.9975** |
+| **Mean Squared Error (MSE)** | 336.53 – 413.13 | **~495.0** (MLP) |
+| **Mean Absolute Error (MAE)** | 13.90 – 15.50 | **~16.5** (MLP) |
+
+---
+
+## 6. Visualization
+The following plot (saved as `results/final_replication_plot.png`) illustrates the model's ability to track the actual S&P 500 index points with high precision during the test period.
+
+---
+
+## 7. Conclusion and Future Directions
+This project confirms that price forecasting accuracy is significantly improved when data dimensionality is increased to include macroeconomic and behavioral (sentiment) factors. 
+
+**Future Work:**
+1.  **Backtesting**: Implementation of a "sliding window" backtest to evaluate the model's performance on the most recent 2024–2025 S&P 500 data.
+2.  **Market Generalization**: Moving the framework to the **Indian NSE (Nifty 50)** market to test its applicability in different economic environments.
